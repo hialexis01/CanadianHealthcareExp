@@ -14,13 +14,14 @@ library(tidyverse)
 CPIHealthcare <- read.xlsx("._CPI private health care index - monthly nsa.xlsx", sheetIndex = 1)
 Physiciandata <- read.csv("Physician workforce SMDB Historical Dataa.csv")
 
-projectdata <- read.xlsx("project731.xlsx", sheetIndex = 1)
+projectdata <- read_excel("project731.xlsx")
 attach(projectdata)
 
-projectdata <- melt(projectdata, 'Year.')
+projectdata <- melt(projectdata, 'Year')
+names(projectdata) <- c('Year', 'Province', 'Total Expenditure')
 ggplot(projectdata, aes(x= Year., y = value, colour= variable))+geom_line()
-agedata <- read.xlsx("Series E1-nhex2017-en.xlsx", sheetIndex = 5)
 
+write.csv(projectdata, "Public Total Expenditure.csv")
 
 #Function to read all data sheets
 read_excel_allsheets <- function(filename, tibble = FALSE) {
@@ -35,14 +36,6 @@ SeriesD2.sheets <- read_excel_allsheets("Series D2-nhex2017-en.xlsx", tibble =  
 
 Provincesname <- c("N.L.", "P.E.I.", "N.S.", "Que.", "Ont.", "Man.", "Sask.", "Alta.", "B.C.", "Y.T.", "N.W.T.", "Nun.")
 FullnameProvince <- c("Newfoundland and Labrador", "Prince Edward Island", "Nova Scotia", "Quebec", "Ontario", "Manitoba", "Saskatchewan", "Alberta", "British Columbia", "Yukon", "Northwest Territories", "Nunavut")
-
-for(i in 1:12){
-  nam <- paste(FullnameProvince[i],sep = "")
-  y <- SeriesD2.sheets[[Provincesname[i]]]
-  names(y) <- y[4,]
-  y <- y[c(5:47),]
-  assign(nam,y)
-}
 
 `Newfoundland and Labrador`$Province <- FullnameProvince[1]
 `Prince Edward Island`$Province <- FullnameProvince[2]
